@@ -47,6 +47,8 @@ exports.addProduct = async (req, res) => {
       keywordIds,
     } = req.body;
 
+    console.log(req.body,"req.body");
+
     // Handling file upload
     if (!req.files) {
       return res.status(400).json({ message: "No files were uploaded." });
@@ -56,15 +58,15 @@ exports.addProduct = async (req, res) => {
     const imagePaths = [];
     const bucketName = "jpmc";
 
-    for (const key in req.files) {
-      if (req.files) {
-        const file = req.files[key];
-        const filePath = `${key}/${file.name}`;
-        console.log(file, "file");
-        const imageUrl = await uploadFileToSupabase(file, bucketName, filePath);
-        imagePaths.push(imageUrl);
-      }
-    }
+    // for (const key in req.files) {
+    //   if (req.files) {
+    //     const file = req.files[key];
+    //     const filePath = `${key}/${file.name}`;
+    //     console.log(file, "file");
+    //     const imageUrl = await uploadFileToSupabase(file, bucketName, filePath);
+    //     imagePaths.push(imageUrl);
+    //   }
+    // }
 
     // Create new product
     const newProduct = new Product({

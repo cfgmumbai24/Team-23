@@ -17,7 +17,7 @@ app.use(fileUpload());
 app.use("/api/v1", userRoutes);
 app.use("/api/v1/product", productRoutes);
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

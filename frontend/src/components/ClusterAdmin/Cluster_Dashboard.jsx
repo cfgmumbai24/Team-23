@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { MdEdit, MdDelete, MdArrowRight } from "react-icons/md";
+import axios from "axios";
 import { FaPlus } from "react-icons/fa";
 import { BarChart, Wallet, Brush, Wrench, Settings } from "lucide-react";
-import { ArrowRight } from "lucide-react";
 
 function Cluster_Dashboard() {
   const products = [
@@ -31,29 +31,115 @@ function Cluster_Dashboard() {
         "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
     },
     {
-        id: 2,
-        name: "Macbook",
-        description:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-        image:
-          "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-      },
+      id: 2,
+      name: "Macbook",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
+      image:
+        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+    },
   ];
 
   const [createProductTranslate, setCreateProductTranslate] = useState("full");
 
-  const handleCreateProduct = () => {
-    if (createProductTranslate === "full") {
-      setCreateProductTranslate("0");
-    } else {
-      setCreateProductTranslate("full");
+  const handleCreateProductPosition = () => {
+    setCreateProductTranslate((prev) => (prev === "full" ? "0" : "full"));
+  };
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "1",
+    length: "",
+    breadth: "",
+    weight: "",
+    unitCost: "",
+    timeToMake: "",
+    status: "true",
+    quantity: "",
+    color: "",
+    creatorId: "",
+    localId: "",
+    keywordIds: "",
+  });
+
+  const [files, setFiles] = useState([]);
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
+  };
+
+  const handleFileChange = (e) => {
+    setFiles([...e.target.files]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
+
+    files.forEach((file, index) => {
+      data.append(`file${index}`, file);
+    });
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/product/add",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Product created successfully");
+        setFormData({
+          title: "",
+          description: "",
+          category: "1",
+          length: "",
+          breadth: "",
+          weight: "",
+          unitCost: "",
+          timeToMake: "",
+          status: "true",
+          quantity: "",
+          color: "",
+          // creatorId: "",
+          // localId: "",
+          keywordIds: "",
+        });
+        setFiles([]);
+      } else {
+        console.error("Failed to create product");
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
+
+  const onEdit = (id) => {
+    console.log("Edit product", id);
+  };
+
+  const onDelete = (id) => {
+    console.log("Delete product", id);
+  };
+
   return (
     <>
       <div>
         <div
-          className={`absolute top-0 ${
+          className={`text-white absolute top-0 ${
             createProductTranslate === "full"
               ? "-translate-y-full"
               : "translate-y-0"
@@ -66,7 +152,7 @@ function Cluster_Dashboard() {
             <p className="mt-2 text-center text-base text-gray-600">
               Please fill in the product details below.
             </p>
-            <form action="#" method="POST" className="mt-8">
+            <form onSubmit={handleSubmit} className="mt-8">
               <div className="space-y-5">
                 <div>
                   <label
@@ -81,6 +167,8 @@ function Cluster_Dashboard() {
                       type="text"
                       placeholder="Sample Product"
                       id="title"
+                      value={formData.title}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -96,7 +184,27 @@ function Cluster_Dashboard() {
                       className="flex h-20 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1"
                       placeholder="This is a sample product description."
                       id="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
                     ></textarea>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    htmlFor="title"
+                    className="text-base font-medium text-gray-300"
+                  >
+                    Category
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1"
+                      type="text"
+                      placeholder="Sample Product"
+                      id="title"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                    />
                   </div>
                 </div>
                 <div>
@@ -112,6 +220,8 @@ function Cluster_Dashboard() {
                       type="number"
                       placeholder="10"
                       id="length"
+                      value={formData.length}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -128,6 +238,8 @@ function Cluster_Dashboard() {
                       type="number"
                       placeholder="5"
                       id="breadth"
+                      value={formData.breadth}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -144,6 +256,8 @@ function Cluster_Dashboard() {
                       type="number"
                       placeholder="2"
                       id="weight"
+                      value={formData.weight}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -160,6 +274,8 @@ function Cluster_Dashboard() {
                       type="number"
                       placeholder="100"
                       id="unitCost"
+                      value={formData.unitCost}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -176,6 +292,8 @@ function Cluster_Dashboard() {
                       type="number"
                       placeholder="2"
                       id="timeToMake"
+                      value={formData.timeToMake}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -190,6 +308,8 @@ function Cluster_Dashboard() {
                     <select
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1"
                       id="status"
+                      value={formData.status}
+                      onChange={handleInputChange}
                     >
                       <option value="true">Available</option>
                       <option value="false">Not Available</option>
@@ -209,6 +329,8 @@ function Cluster_Dashboard() {
                       type="number"
                       placeholder="50"
                       id="quantity"
+                      value={formData.quantity}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -225,6 +347,8 @@ function Cluster_Dashboard() {
                       type="text"
                       placeholder="Red"
                       id="color"
+                      value={formData.color}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -241,6 +365,8 @@ function Cluster_Dashboard() {
                       type="text"
                       placeholder="60c72b2f9b1e8c6d88a8d1d1"
                       id="creatorId"
+                      value={formData.creatorId}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -257,6 +383,8 @@ function Cluster_Dashboard() {
                       type="text"
                       placeholder="60c72b2f9b1e8c6d88a8d1d2"
                       id="localId"
+                      value={formData.localId}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -273,20 +401,36 @@ function Cluster_Dashboard() {
                       type="text"
                       placeholder="60c72b2f9b1e8c6d88a8d1d3, 60c72b2f9b1e8c6d88a8d1d4"
                       id="keywordIds"
+                      value={formData.keywordIds}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-base font-medium text-gray-300">
+                    Upload Images
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1"
+                      type="file"
+                      multiple
+                      onChange={handleFileChange}
                     />
                   </div>
                 </div>
                 <div>
                   <button
-                    type="button"
+                    type="submit"
+                    onclick={handleSubmit}
                     className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >
-                    Submit Product Details{" "}
-                    <ArrowRight className="ml-2" size={16} />
+                    Submit Product Details
+                    <MdArrowRight className="ml-2" size={16} />
                   </button>
                   <button
                     type="button"
-                    onClick={handleCreateProduct}
+                    onClick={handleCreateProductPosition}
                     className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-3.5 py-2.5 font-semibold leading-7 text-white mt-2 hover:bg-red-800"
                   >
                     Cancel
@@ -461,7 +605,7 @@ function Cluster_Dashboard() {
           <div className="flex flex-col items-end justify-start my-8 py-6 bg-white border rounded-xl">
             <button
               className="border p-2 mx-10 flex items-center gap-x-1 font-semibold rounded-full bg-gray-100 hover:bg-gray-200 transition duration-300"
-              onClick={handleCreateProduct}
+              onClick={handleCreateProductPosition}
             >
               <FaPlus className="text-xl text-green-500" /> Add Product
             </button>
