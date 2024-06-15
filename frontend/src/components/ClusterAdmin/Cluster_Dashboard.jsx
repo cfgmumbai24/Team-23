@@ -165,6 +165,14 @@ function Cluster_Dashboard() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  function truncateText(text, wordLimit) {
+    const words = text.split(" ");
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(" ") + "...";
+    }
+    return text;
+  }
+
   return (
     <>
       <div>
@@ -567,7 +575,7 @@ function Cluster_Dashboard() {
                   Today's Money
                 </p>
                 <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-                  $53k
+                  ₹53k
                 </h4>
               </div>
               <div className="border-t border-blue-gray-50 p-4">
@@ -654,7 +662,7 @@ function Cluster_Dashboard() {
                   <div className="p-4">
                     <h1 className="text-lg font-semibold">{product.title}</h1>
                     <p className="mt-1 text-sm text-gray-600">
-                      {product.description}
+                      {truncateText(product.description, 15)}
                     </p>
                   </div>
                   <div className="absolute top-2 right-2 flex space-x-2">
