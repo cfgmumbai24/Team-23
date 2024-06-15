@@ -12,7 +12,7 @@ const Counter = mongoose.model("Counter", CounterSchema);
 const ProductSchema = new mongoose.Schema({
   images: {
     type: [String],
-    required: true,
+    required: false,
   },
   category: {
     type: String,
@@ -100,7 +100,7 @@ ProductSchema.pre("save", async function (next) {
 });
 
 // Keyword Schema
-const KeywordSchema = new Schema({
+const KeywordSchema = new mongoose.Schema({
   keyword: {
     type: String,
     required: true,
