@@ -1,6 +1,11 @@
 // POST API to create a new product
 const { Product } = require("../models/product");
 const { createClient } = require("@supabase/supabase-js");
+const {
+  generateProduct,
+  generateProductData,
+  transformedData,
+} = require("../utils");
 
 // Initialize Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.ANON_KEY);
@@ -97,15 +102,20 @@ exports.addProduct = async (req, res) => {
 exports.getProducts = async (req, res) => {
   try {
     const { creatorId } = req.query;
+    const products = [];
+    // let products;
+    // if (creatorId) {
+    //   products = await Product.find({ creatorId });
+    // } else {
+    //   products = await Product.find();
+    // }
 
-    let products;
-    if (creatorId) {
-      products = await Product.find({ creatorId });
-    } else {
-      products = await Product.find();
-    }
+    // for (let i = 0; i < 20; i++) {
+    //   products.push(productData);
+    // }
+    const productData = transformedData;
 
-    res.status(200).json(products);
+    res.status(200).json(productData);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
