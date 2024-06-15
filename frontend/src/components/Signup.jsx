@@ -2,13 +2,78 @@
 
 import { ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
+import { useGoogleLogin } from '@react-oauth/google';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Signup() {
 	const navigate = useNavigate();
 
+  const [Email, setEmail] = useState("");
+  const [Password1, setPassword1] = useState("");
+  const [Password2, setPassword2] = useState("");
+  const [name, setName] = useState("");
+
 	const handleClick = () => {
-	    navigate('/Signin'); 
+	    normalLogin(); 
 	};
+
+  const baseurl="http://127.0.0.1:8080/api/v1";
+  const normalLogin = async () => {
+    if (Password1 !== Password2) {
+      return toast.error('Invalid confirm password!', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+    let response = await fetch(baseurl + "/signup", {
+      method: "post",
+      body: JSON.stringify({ Name: name, Password: Password1, Email: Email }),
+      headers: { 'content-type': 'application/json' }
+    });
+    response = await response.json();
+    console.log(response);
+    if (response.success === 1) {
+      return toast.success(response.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+    if (response.success === 0) {
+      return toast.error(response.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+    Cookies.set('user', JSON.stringify(response.user));
+    Cookies.set('jwtoken', response.jwtoken, { expires: 7, secure: false });
+    navigate('/');
+
+  }
+
+  
+ 
+
 	
   return (
     <section>
@@ -39,7 +104,7 @@ function Signup() {
                   Full Name{' '}
                 </label>
                 <div className="mt-2">
-                  <input
+                  <input onChange={(e)=>setName(e.target.value)} value={name}
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                     type="text"
                     placeholder="Full Name"
@@ -54,6 +119,7 @@ function Signup() {
                 </label>
                 <div className="mt-2">
                   <input
+                    onChange={(e)=>setEmail(e.target.value)} value={Email}
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                     type="email"
                     placeholder="Email"
@@ -70,9 +136,29 @@ function Signup() {
                 </div>
                 <div className="mt-2">
                   <input
+                    onChange={(e)=>setPassword1(e.target.value)}
+                    value={Password1}
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                     type="password"
                     placeholder="Password"
+                    id="password"
+                  ></input>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="password" className="text-base font-medium text-gray-900">
+                    {' '}
+                    Confirm Password{' '}
+                  </label>
+                </div>
+                <div className="mt-2">
+                  <input
+                    onChange={(e)=>setPassword2(e.target.value)}
+                    value={Password2}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    type="password"
+                    placeholder="Confirm Password"
                     id="password"
                   ></input>
                 </div>
@@ -109,6 +195,7 @@ function Signup() {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </section>
   )
 }
