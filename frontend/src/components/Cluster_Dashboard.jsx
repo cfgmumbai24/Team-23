@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { MdEdit } from "react-icons/md";
-import { FaMinus, FaPlus } from "react-icons/fa";
+import { MdEdit, MdDelete } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
 import { BarChart, Wallet, Brush, Wrench, Settings } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 
@@ -498,7 +498,7 @@ function Cluster_Dashboard() {
                       className="flex items-center justify-center rounded-full bg-red-500 p-2 text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                       title="Remove"
                     >
-                      <FaMinus className="w-4 h-4" />
+                      <MdDelete className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
