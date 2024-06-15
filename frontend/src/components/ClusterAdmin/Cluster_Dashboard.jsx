@@ -1,44 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdEdit, MdDelete, MdArrowRight } from "react-icons/md";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa";
 import { BarChart, Wallet, Brush, Wrench, Settings } from "lucide-react";
 
 function Cluster_Dashboard() {
-  const products = [
-    {
-      id: 1,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: 2,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: 2,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: 2,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-  ];
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "Macbook",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
+  //     image:
+  //       "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Macbook",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
+  //     image:
+  //       "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Macbook",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
+  //     image:
+  //       "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Macbook",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
+  //     image:
+  //       "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  //   },
+  // ];
 
   const [createProductTranslate, setCreateProductTranslate] = useState("full");
 
@@ -134,6 +134,36 @@ function Cluster_Dashboard() {
   const onDelete = (id) => {
     console.log("Delete product", id);
   };
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/v1/product/products"
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <>
@@ -617,12 +647,12 @@ function Cluster_Dashboard() {
                   className="relative w-full sm:w-[300px] m-4 rounded-md border bg-gray-100 hover:shadow-lg transition duration-300"
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60"
-                    alt="Product"
+                    src={product.images[0] || "https://via.placeholder.com/300"} // Fallback to placeholder if no image
+                    alt={product.title}
                     className="h-[200px] w-full rounded-t-md object-cover"
                   />
                   <div className="p-4">
-                    <h1 className="text-lg font-semibold">{product.name}</h1>
+                    <h1 className="text-lg font-semibold">{product.title}</h1>
                     <p className="mt-1 text-sm text-gray-600">
                       {product.description}
                     </p>
