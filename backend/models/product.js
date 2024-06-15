@@ -100,7 +100,7 @@ ProductSchema.pre("save", async function (next) {
 });
 
 // Keyword Schema
-const KeywordSchema = new Schema({
+const KeywordSchema = new mongoose.Schema({
   keyword: {
     type: String,
     required: true,

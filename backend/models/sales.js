@@ -23,24 +23,7 @@ const SalesSchema = new Schema({
   },
   fulfilled: {
     type: Boolean,
-    required: true,
-  },
-});
-
-// Client Schema
-const ClientSchema = new Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  phoneNo: {
-    type: String,
-    required: true,
-  },
-  zipcode: {
-    type: String,
-    required: true,
+    default: "False",
   },
 });
 
