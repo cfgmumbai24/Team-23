@@ -1,5 +1,9 @@
 const express = require("express");
-const connectDB = require("./config/db");
+
+const { connectDB } = require("./config/db");
+const userRoutes = require("./routes/userRoutes");
+const productRoutes = require("./routes/productRoutes");
+const fileUpload = require("express-fileupload");
 const dotenv = require("dotenv");
 dotenv.config();
 const userRoutes = require("./routes/userRoutes");
@@ -12,11 +16,14 @@ const app = express();
 connectDB();
 
 // Init Middleware
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+app.use(express.json());
+app.use(fileUpload());
 // Define Routes
 app.use("/api/v1", userRoutes);
+app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/sales", salesRoutes);
 app.use("/api/v1/in", inventoryRoutes);
 

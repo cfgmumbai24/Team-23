@@ -12,7 +12,7 @@ const Counter = mongoose.model("Counter", CounterSchema);
 const ProductSchema = new mongoose.Schema({
   images: {
     type: [String],
-    required: true,
+    required: false,
   },
   category: {
     type: String,
