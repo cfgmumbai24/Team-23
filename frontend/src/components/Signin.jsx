@@ -2,12 +2,51 @@
 
 import { ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
-
+import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
 
 function Signin() {
 	const navigate = useNavigate();
 
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
+
+  const baseurl="http://127.0.0.1:8080/api/v1";
+
+
+  const handleClick = async () => {
+    
+    let response = await fetch(baseurl + "/login", {
+      method: "post",
+      body: JSON.stringify({ email: Email, password: Password }),
+      headers: { 'content-type': 'application/json' }
+    });
+    response = await response.json();
+    console.log(response);
+    if (response.success === 1) {
+      Cookies.set('jwtoken', response.jwtoken, { expires: 7, secure: false });
+      console.log(JSON.stringify(response.user));
+      Cookies.set('user', JSON.stringify(response.user));
+      navigate('/');
+    }
+    else {
+      toast.error(response.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+
 	const displayPortal = () => {
+
 	    navigate('/PortalPage'); 
 	};
   return (
@@ -39,6 +78,8 @@ function Signin() {
                 </label>
                 <div className="mt-2">
                   <input
+                    onChange={(e)=>setEmail(e.target.value)}
+                    value={Email}
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                     type="email"
                     placeholder="Email"
@@ -58,6 +99,8 @@ function Signin() {
                 </div>
                 <div className="mt-2">
                   <input
+                  onChange={(e)=>setPassword(e.target.value)}
+                  value={Password}
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                     type="password"
                     placeholder="Password"
@@ -68,7 +111,7 @@ function Signin() {
                 <button
                   type="button"
                   className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
-		  onClick={displayPortal}
+		  onClick={handleClick}
                 >
                   Get started <ArrowRight className="ml-2" size={16} />
                 </button>
@@ -96,6 +139,7 @@ function Signin() {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </section>
   )
 }

@@ -1,6 +1,7 @@
 const express = require("express");
 const { connectDB } = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
+const cors=require('cors');
 const productRoutes = require("./routes/productRoutes");
 const fileUpload = require("express-fileupload");
 
@@ -10,8 +11,8 @@ const app = express();
 connectDB();
 
 // Init Middleware
-
 app.use(express.json());
+app.use(cors());
 app.use(fileUpload());
 // Define Routes
 app.use("/api/v1", userRoutes);
