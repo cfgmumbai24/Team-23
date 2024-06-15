@@ -13,7 +13,12 @@
         "name": "BRIDEL GOLD AND REDBROWN COLOURED NECKLACE",
         "price": "\u20b9699",
         "stock": "2 item left in Stock",
-        "features": "Features\nElegant and beautiful\nEnvironment Friendly\nSuitable for every location and outfit\nComfortable to Wear",
+        "features": [
+            "Elegant and beautiful",
+            "Environment Friendly",
+            "Suitable for every location and outfit",
+            "Comfortable to Wear"
+        ],
         "description": "Description of product\nThe jewelry set from terracotta collection have been skillfully hand painted by the talented artisans from the rural area of India. Depicting exquisitely crafted design) using natural clay (terracotta) with vibrant colours. These necklace set exude an elegance and beauty that are demostrated with intense detailing. The asthetic of the jewelry makes them perfect for all kinds of look- Indian, western or fusion. this stunning piece is a definite must have to elevate any outfit.",
         "specifications": {
             "City Of Origin": "Gorakhpur",

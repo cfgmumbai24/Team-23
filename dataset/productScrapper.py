@@ -34,7 +34,7 @@ def extract_product_details(driver, link):
 
     # Extract features
     features_element = driver.find_element(By.CLASS_NAME, 'row.features.ng-scope')
-    features = features_element.text
+    features = [li.text for li in features_element.find_elements(By.TAG_NAME, 'li')]
 
     # Extract description
     description_element = driver.find_element(By.CLASS_NAME, 'product-description.ng-scope')
@@ -63,7 +63,7 @@ def extract_product_details(driver, link):
         }
     }
 
-product_link = "https://www.myehaat.in/product/bridel-gold-and-redbrown-coloured-necklace"  # Replace with actual product link
+product_link = "https://www.myehaat.in/product/bridel-gold-and-redbrown-coloured-necklace"
 product_details = extract_product_details(driver, product_link)
 
 with open('single_product_details.json', 'w') as f:
