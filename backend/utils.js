@@ -70,7 +70,6 @@ const generateProduct = () => {
 
 // Replace with the path to your JSON file
 const filePath = `${__dirname}/dataset.json`;
-console.log(filePath);
 
 // Read and parse the JSON file
 const exampleData = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -114,18 +113,18 @@ const convertToProductSchema = (data) => {
   };
 };
 
-const transformedData = exampleData.map(convertToProductSchema);
+const transformedData = exampleData.filter((index) => {
+  if (index / 2 === 0) {
+    convertToProductSchema;
+  }
+});
 
 // Output transformed data (for example, to console or save to a new file)
-console.log(JSON.stringify(transformedData, null, 2));
 
 // Optionally, save the transformed data to a new JSON file
 // const outputFilePath = "path/to/your/transformed_products.json";
 // fs.writeFileSync(outputFilePath, JSON.stringify(transformedData, null, 2));
 
 const fakerData = generateFakerData();
-console.log(JSON.stringify(fakerData, null, 2));
-
-console.log(generateProductData());
 
 module.exports = { generateProduct, generateProductData, transformedData };

@@ -52,7 +52,7 @@ exports.addProduct = async (req, res) => {
       keywordIds,
     } = req.body;
 
-    console.log(req.body,"req.body");
+    console.log(req.body, "req.body");
 
     // Handling file upload
     if (!req.files) {

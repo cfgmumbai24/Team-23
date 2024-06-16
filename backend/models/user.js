@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
   },
   accessLevel: {
     type: Number,
-    // required: true,
+    required: true,
     enum: [1, 2, 3], // Only allow values 1, 2, or 3
   },
   parentId: {

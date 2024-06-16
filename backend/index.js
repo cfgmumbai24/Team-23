@@ -1,10 +1,11 @@
 const express = require("express");
 const { connectDB } = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
-const cors=require('cors');
+const cors = require("cors");
 const productRoutes = require("./routes/productRoutes");
+const descriptionRoutes = require("./routes/descriptionRoute");
 const fileUpload = require("express-fileupload");
-const emailRouter = require('./routes/emailRouter');
+const emailRouter = require("./routes/emailRouter");
 
 const app = express();
 
@@ -19,8 +20,9 @@ app.use(fileUpload());
 app.use("/api/v1", userRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/email", emailRouter);
+app.use("/api/v1/gen", descriptionRoutes);
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
