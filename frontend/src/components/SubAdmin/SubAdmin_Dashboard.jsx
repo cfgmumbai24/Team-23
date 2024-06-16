@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdEdit } from "react-icons/md";
 import { FaCheck } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
 import { IoIosNotifications } from "react-icons/io";
 import { BarChart, Wallet, Brush, Wrench, Settings } from "lucide-react";
 import { defaults } from "chart.js/auto";
@@ -17,43 +19,7 @@ defaults.plugins.title.align = "start";
 defaults.plugins.title.font.size = 20;
 defaults.plugins.title.color = "black";
 
-
 function SubAdmin_Dashboard() {
-  const products = [
-    {
-      id: 1,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: 2,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: 3,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: 4,
-      name: "Macbook",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, debitis?",
-      image:
-        "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-    },
-  ];
-
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [formState, setFormState] = useState({
@@ -119,6 +85,45 @@ function SubAdmin_Dashboard() {
       },
     },
   };
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/v1/product/products"
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setProducts(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  function truncateText(text, wordLimit) {
+    const words = text.split(" ");
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(" ") + "...";
+    }
+    return text;
+  }
 
   return (
     <>
@@ -188,7 +193,7 @@ function SubAdmin_Dashboard() {
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
                   alt="Your avatar"
                 />
-                <span className="mx-2 text-sm font-medium">Team-23</span>
+                <span className="mx-2 text-sm font-medium">Team-23-Sub</span>
               </a>
               <a
                 href="#"
@@ -364,19 +369,27 @@ function SubAdmin_Dashboard() {
                   className="relative w-full sm:w-[300px] m-4 rounded-md border bg-gray-100 hover:shadow-lg transition duration-300"
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGJsb2d8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60"
-                    alt="Product"
+                    src={product.images[0] || "https://via.placeholder.com/300"}
+                    alt={product.title}
                     className="h-[200px] w-full rounded-t-md object-cover"
                   />
                   <div className="p-4">
-                    <h1 className="text-lg font-semibold">{product.name}</h1>
+                    <h1 className="text-lg font-semibold">{product.title}</h1>
                     <p className="mt-1 text-sm text-gray-600">
-                      {product.description}
+                      {truncateText(product.description, 15)}
                     </p>
                   </div>
                   <div className="absolute top-2 right-2 flex space-x-2">
                     <button
-                      onClick={() => handleEditClick(product)}
+                      type="button"
+                      onClick={() => {
+                        setIsEditing(true);
+                        setCurrentProduct(product.id);
+                        setFormState({
+                          name: product.title,
+                          description: product.description,
+                        });
+                      }}
                       className="flex items-center justify-center rounded-full bg-blue-500 p-2 text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       title="Edit"
                     >
@@ -385,59 +398,57 @@ function SubAdmin_Dashboard() {
                     <button
                       type="button"
                       onClick={() => onDelete(product.id)}
-                      className="flex items-center justify-center rounded-full bg-green-500 p-2 text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      title="Approve"
+                      className="flex items-center justify-center rounded-full bg-green-500 p-2 text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      title="Remove"
                     >
                       <FaCheck className="w-4 h-4" />
                     </button>
                   </div>
-                  {isEditing &&
-                    currentProduct &&
-                    currentProduct.id === product.id && (
-                      <form
-                        onSubmit={handleFormSubmit}
-                        className="absolute inset-0 bg-white p-4 rounded-md shadow-lg z-10"
-                      >
-                        <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-700">
-                            Name
-                          </label>
-                          <input
-                            type="text"
-                            name="name"
-                            value={formState.name}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-700">
-                            Description
-                          </label>
-                          <textarea
-                            name="description"
-                            value={formState.description}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                          />
-                        </div>
-                        <div className="flex justify-end space-x-2">
-                          <button
-                            type="button"
-                            onClick={() => setIsEditing(false)}
-                            className="px-4 py-2 bg-gray-500 text-white rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            type="submit"
-                            className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </form>
-                    )}
+                  {isEditing && currentProduct?.id === product.id && (
+                    <form
+                      onSubmit={handleFormSubmit}
+                      className="absolute inset-0 bg-white p-4 rounded-md shadow-lg z-20"
+                    >
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formState.name}
+                          onChange={handleInputChange}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Description
+                        </label>
+                        <textarea
+                          name="description"
+                          value={formState.description}
+                          onChange={handleInputChange}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        />
+                      </div>
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => setIsEditing(false)}
+                          className="px-4 py-2 bg-gray-500 text-white rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </form>
+                  )}
                 </div>
               ))}
             </div>
