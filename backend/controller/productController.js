@@ -47,10 +47,10 @@ exports.addProduct = async (req, res) => {
       keywordIds,
     } = req.body;
 
-    // Handling file upload
-    if (!req.files) {
-      return res.status(400).json({ message: "No files were uploaded." });
-    }
+    // // Handling file upload
+    // if (!req.files) {
+    //   return res.status(400).json({ message: "No files were uploaded." });
+    // }
 
     // console.log(images, "images");
     const imagePaths = [];

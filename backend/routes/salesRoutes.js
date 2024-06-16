@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const salesController = require("../controller/salesController");
 
-// POST API to create a new sale
+// GET sales route
+router.get("/sales", salesController.getSales);
+
+// POST new sale route
 router.post("/sales", salesController.addSale);
 
 module.exports = router;

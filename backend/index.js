@@ -6,7 +6,6 @@ const productRoutes = require("./routes/productRoutes");
 const fileUpload = require("express-fileupload");
 const dotenv = require("dotenv");
 dotenv.config();
-const userRoutes = require("./routes/userRoutes");
 const salesRoutes = require("./routes/salesRoutes");
 const inventoryRoutes = require("./routes/inventoryRoutes");
 
@@ -18,14 +17,13 @@ connectDB();
 // Init Middleware
 app.use(express.urlencoded({ extended: true }));
 
-
 app.use(express.json());
 app.use(fileUpload());
 // Define Routes
 app.use("/api/v1", userRoutes);
-app.use("/api/v1/product", productRoutes);
-app.use("/api/v1/sales", salesRoutes);
-app.use("/api/v1/in", inventoryRoutes);
+app.use("/api/v1/", productRoutes);
+app.use("/api/v1/", salesRoutes);
+app.use("/api/v1/", inventoryRoutes);
 
 const PORT = process.env.PORT || 8080;
 
