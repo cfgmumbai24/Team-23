@@ -151,6 +151,7 @@ function Cluster_Dashboard() {
         }
 
         const data = await response.json();
+        console.log(data);
         setProducts(data);
       } catch (error) {
         setError(error.message);
@@ -537,7 +538,7 @@ function Cluster_Dashboard() {
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
                   alt="Your avatar"
                 />
-                <span className="mx-2 text-sm font-medium">Team-23</span>
+                <span className="mx-2 text-sm font-medium">Team-23-Cluster</span>
               </a>
               <a
                 href="#"
