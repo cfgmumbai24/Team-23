@@ -4,6 +4,7 @@ const userRoutes = require("./routes/userRoutes");
 const cors=require('cors');
 const productRoutes = require("./routes/productRoutes");
 const fileUpload = require("express-fileupload");
+const emailRouter = require('./routes/emailRouter');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(fileUpload());
 // Define Routes
 app.use("/api/v1", userRoutes);
 app.use("/api/v1/product", productRoutes);
+app.use("/api/v1/email", emailRouter);
 
 const PORT = process.env.PORT || 8000;
 
